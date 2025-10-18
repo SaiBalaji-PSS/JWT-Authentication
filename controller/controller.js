@@ -39,6 +39,7 @@ const registerUser = async (req,res) => {
 
     }
     catch(error){
+         console.log("FOUR")
         console.log(error)
         res.status(500).json({isSuccess:false,message:"Internal server error"})
     }
@@ -77,6 +78,7 @@ const login = async (req,res) =>{
    
     }
     catch(error){
+         console.log("THREE")
         console.log(error)
         res.status(500).json({message:"Internal server error"})
     }
@@ -84,4 +86,24 @@ const login = async (req,res) =>{
 
 }
 
-module.exports = {registerUser,login}
+
+const greetUser = async (req,res) => {
+    const {id} = req.user 
+    try{
+        const userDataFromDB = await db.select().from(userTable)
+                                          .where(eq(userTable.id,id))
+//This step is not needed because user is checked for authorisation through token verify middleware
+        // if(userDataFromDB.length == 0){
+        //     res.status(403).json({isSuccess:false,message:"Invalid user"})
+        // }
+        res.status(200).json({isSuccess:true,message:`Hello ${userDataFromDB[0].userName}`})
+    }
+    catch(error){
+        console.log("TWO")
+        console.log(error)
+        res.status(500).json({isSuccess:false,message:"Internal server error"})
+    }
+   
+}
+
+module.exports = {registerUser,login,greetUser,greetUser}
